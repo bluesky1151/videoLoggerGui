@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "VideoBank",
+    "version": "1.0",
+    "description": "Vue3でChrome拡張を作成したサンプルです。",
+    "permissions": ["activeTab", "scripting", "tabs", "history", "storage"],
+    "action": {
+      "default_popup": "index.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://jp.spankbang.com/*"],
+            "js": ["modules/jquery-3.6.0.min.js", "scripts/spankbang.js"],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [ "https://www.xnxx.com/*" ],
+            "js": [ "modules/jquery-3.6.0.min.js" , "scripts/xnxx.js" ],
+            "run_at": "document_end"
+        }
+    ]
+  }
