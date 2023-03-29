@@ -15,6 +15,7 @@ import { computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import currentVideos from "@/components/currentVideos.vue";
 import registedVideos from '@/components/registedVideos.vue';
+import settingVue from '@/components/settingVue.vue'
 import { useRouter } from 'vue-router';
 
 export default {
@@ -23,7 +24,8 @@ export default {
         const router = useRouter();
         const menuList = {
             1: { label: "履歴", id: 1, component: currentVideos },
-            2: { label: "登録済", id: 2, component: registedVideos }
+            2: { label: "登録済", id: 2, component: registedVideos },
+            3: {label: "設定", id: 3, component: settingVue}
         }
 
         const load = async () => {
@@ -60,7 +62,7 @@ export default {
             reAuth
         }
     },
-    components: { currentVideos, registedVideos }
+    components: { currentVideos, registedVideos, settingVue }
 }
 </script>
 
@@ -84,7 +86,7 @@ export default {
 .menuTab.selected {
     color: white;
 }
-.menuTab:first-child {
+.menuTab:not(.menuTab:last-child) {
     border-right: 1px solid white;
 }
 .videoArea{
