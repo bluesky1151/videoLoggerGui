@@ -12,12 +12,25 @@
                 <th>再起動</th>
                 <td><button class="w100" @click="restart">再起動</button></td>
             </tr>
+            <tr>
+                <th>ログ監査</th>
+                <td><select class="w100 textCenter" v-model="logName">
+                    <option hidden value="">選択してください</option>
+                    <template v-for="(files, key) in logList" :key="key">
+                        <option disabled>{{ key }}</option>
+                        <option v-for="file in files" :key="file" :value="`${key}/${file}`">{{ file }}</option>
+                    </template>
+                </select></td>
+            </tr>
+            <tr>
+                <td colspan="2"><textarea class="w100" :style="{backgroundColor: '#181818', color: 'white'}" readonly rows="10" v-model="logContent"></textarea></td>
+            </tr>
         </table>
     </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 
@@ -25,9 +38,22 @@ export default {
     setup() {
         const store = useStore();
         const serverVersion = ref();
+        const logName = ref("");
+        const logList = ref({});
+        const logContent = ref("");
+
+        watch(logName, (v) => {
+            if(!v) return logContent.value = "";
+
+            return store.dispatch('Api/callApi', {url: "videos/logContents", data: {fname: v}}).then(data => {
+                // console.log(data);
+                logContent.value = data;
+            });
+        })
 
         const load = async () => {
             serverVersion.value = await store.dispatch('Api/callApi', {url: "videos/getVersion"});
+            logList.value = await store.dispatch('Api/callApi', {url: "videos/logfiles"});
         }
         load();
 
@@ -37,7 +63,10 @@ export default {
 
         return {
             restart,
-            serverVersion
+            serverVersion,
+            logName,
+            logList,
+            logContent
         }
     }
 }

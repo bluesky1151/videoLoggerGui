@@ -1,7 +1,7 @@
 <template>
     <div class="topView">
         <p>現在未認証のため、機能を使用することができません</p>
-        <p>パスワード: <input type="password" v-model="password" @keydown.Enter="auth" /><button @click="auth">認証</button></p>
+        <p>パスワード: <input type="password" v-model="password" @keydown.enter="auth" /><button @click="auth">認証</button></p>
     </div>
 </template>
 
@@ -30,7 +30,7 @@ export default {
                 return;
             }
             await store.dispatch('Api/Login', {url: "auth", data: {password: password.value, username: "hoge"}});
-            // alert(resp);
+            password.value = "";
             router.push('/u');
         }
 

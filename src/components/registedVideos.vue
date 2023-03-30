@@ -4,6 +4,7 @@
             <p>ソートタイプ: <select v-model="sortType" @change="load">
                 <option value="0">登録順</option>
                 <option value="1">優先度順</option>
+                <option value="2">再生順</option>
             </select></p>
             <p>ソート順: <select v-model="sort" @change="load">
                 <option value="0">昇順</option>
@@ -22,7 +23,11 @@
                 <tr v-for="v in viewList" :key="v">
                     <td class="thumb"><a :href="v.url" :title="v.title" target="_blank"><img :src="v.images" /></a></td>
                     <td class="text"><a :href="v.url" :title="v.title" target="_blank">{{ v.title }}</a></td>
-                    <td>{{ v.priority }}</td>
+                    <td>
+                        {{ v.priority }}
+                        <hr />
+                        {{ formatDate(v.lastPlayed) }}
+                    </td>
                     <td><button class="w100" @click="deleteVideo(v.url)">解除</button></td>
                 </tr>
             </table>
@@ -34,10 +39,10 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import pageNation from './items/pageNation.vue';
-
+import { formatDate } from "@/utils/utils";
 
 export default {
     setup() {
@@ -47,7 +52,7 @@ export default {
         const sortType = ref();
 
         const videos = ref([]);
-        const current = ref(1);
+        const current = ref(null);
 
         const viewCount = 5;
 
@@ -76,8 +81,8 @@ export default {
                 sortType: sortType.value,
                 sort: sort.value
             }})
-
-
+            
+            current.value = store.getters["Common/currentPage"];
         }
         load();
 
@@ -88,6 +93,12 @@ export default {
             }
         }
 
+        watch(current, async (n, o) => {
+            if(o == null) return;
+
+            await store.dispatch('Common/setCurrentPage', n);
+        })
+
         return {
             sortType,
             sort,
@@ -95,7 +106,8 @@ export default {
             maxPage,
             current,
             viewList,
-            deleteVideo
+            deleteVideo,
+            formatDate
         }
     },
     components: {pageNation}

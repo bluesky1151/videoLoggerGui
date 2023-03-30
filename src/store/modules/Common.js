@@ -2,7 +2,8 @@ import createPersitstedState from 'vuex-persistedstate';
 const state = ()=> ({
     menuId: 1,
     sortType: "1",
-    sort: "1"
+    sort: "1",
+    currentPage: 1
 });
 const mutations = {
     setMenuId(state, num) {
@@ -13,6 +14,9 @@ const mutations = {
     },
     sort(state, num) {
         state.sort = num;
+    },
+    setCurrentPage(state, num) {
+        state.currentPage = num;
     }
 };
 const actions = {
@@ -24,12 +28,16 @@ const actions = {
     },
     sort(context, num) {
         context.commit('sort', num);
+    },
+    setCurrentPage(context, num) {
+        context.commit('setCurrentPage', num);
     }
 };
 const getters = {
     menuId: state => { return state.menuId },
     sort: state => { return state.sort },
-    sortType: state => { return state.sortType }
+    sortType: state => { return state.sortType },
+    currentPage: state => { return state.currentPage }
 };
 
 export default{
