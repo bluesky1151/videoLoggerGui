@@ -17,6 +17,11 @@
             "matches": [ "https://www.xnxx.com/*" ],
             "js": [ "modules/jquery-3.6.0.min.js" , "scripts/xnxx.js" ],
             "run_at": "document_end"
+        },
+        {
+            "matches": [ "https://www.xvideos.com/video*" ],
+            "js": [ "modules/jquery-3.6.0.min.js" , "scripts/xvideos.js" ],
+            "run_at": "document_end"
         }
     ]
   }

@@ -10,9 +10,10 @@
                 <option value="0">昇順</option>
                 <option value="1">降順</option>
             </select></p>
+            <p>動画: {{ videoCount }}件登録中</p>
         </div>
+        <pageNation v-model="current" :maxPage="maxPage"></pageNation>
         <template v-if="viewList.length">
-            <pageNation v-model="current" :maxPage="maxPage"></pageNation>
             <table class="normal w100 fix">
                 <tr>
                     <th>サムネイル</th>
@@ -51,6 +52,8 @@ export default {
         const sort = ref();
         const sortType = ref();
 
+        const videoCount = ref();
+
         const videos = ref([]);
         const current = ref(null);
 
@@ -77,10 +80,13 @@ export default {
             else await store.dispatch('Common/sort', sort.value);
             if(!sortType.value) sortType.value = store.getters["Common/sortType"]
             else await store.dispatch('Common/sortType', sortType.value);
-            videos.value = await store.dispatch('Api/callApi', {url: "videos/videolists", data: {
+            let videoInfo = await store.dispatch('Api/callApi', {url: "videos/videolists", data: {
                 sortType: sortType.value,
                 sort: sort.value
             }})
+
+            videos.value = videoInfo.video;
+            videoCount.value = videoInfo.count;
             
             current.value = store.getters["Common/currentPage"];
         }
@@ -107,7 +113,8 @@ export default {
             current,
             viewList,
             deleteVideo,
-            formatDate
+            formatDate,
+            videoCount
         }
     },
     components: {pageNation}
@@ -123,5 +130,10 @@ export default {
     overflow: hidden;
     white-space: nowrap;
 
+}
+
+.sorting{
+    display: flex;
+    flex-wrap: wrap;
 }
 </style>

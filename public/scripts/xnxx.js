@@ -11,9 +11,13 @@ if(isset(url)) {
     //動画
     // alert('input')
     // const title = document.getElementById('container').getElementsByTagName('h1')[0].innerText;
+    let splt = nowurl.split('/');
+    splt[4] = "_";
+
+    let url_ = splt.slice(0, 5);
     $.post(target, {
         title: document.title,
-        url: nowurl,
+        url: url_.join('/'),
         image: getImageURL()
     }, (data) => {
         console.log(data);

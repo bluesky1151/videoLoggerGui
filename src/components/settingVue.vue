@@ -13,6 +13,10 @@
                 <td><button class="w100" @click="restart">再起動</button></td>
             </tr>
             <tr>
+                <th>動画情報更新</th>
+                <th><button class="w100" @click="checkVideo">更新</button></th>
+            </tr>
+            <tr>
                 <th>ログ監査</th>
                 <td><select class="w100 textCenter" v-model="logName">
                     <option hidden value="">選択してください</option>
@@ -61,12 +65,23 @@ export default {
             await store.dispatch('Api/callApi', {url: "videos/restart"});
         };
 
+        const checkVideo = async () => {
+            logName.value = "video/video.log";
+            let resp = await store.dispatch('Api/callApi', {url: "videos/updatevideos"});
+
+            if(resp) alert(resp);
+
+            
+            logContent.value = await store.dispatch('Api/callApi', {url: "videos/logContents", data: {fname: logName.value}})
+        }
+
         return {
             restart,
             serverVersion,
             logName,
             logList,
-            logContent
+            logContent,
+            checkVideo
         }
     }
 }
