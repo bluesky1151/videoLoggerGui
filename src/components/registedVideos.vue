@@ -12,6 +12,20 @@
             </select></p>
             <p>動画: {{ videoCount }}件登録中</p>
         </div>
+        <div class="sorting">
+            <p>タイトル検索: <input v-model="videoTitle" @change="load" /></p>
+            <p>サイト検索: <select v-model="site" @change="load">
+                <option value="">すべて</option>
+                <option value="-1">未分類</option>
+                <option v-for="sl in siteLists" :key="sl" :value="sl.value">{{ sl.description }}</option>
+            </select></p>
+            <p>タグ検索: <select v-model="tag" @change="putTags">
+                <option v-for="(t, index) in tags" :key="index" :value="index">{{ t }}</option>
+            </select></p>
+        </div>
+        <div class="sorting tags">
+            <span class="tag" v-for="(t, index) of selectedTags" :key="index">{{ t }}&nbsp;<span class="deleteBtn" @click="delTag(index)">×</span></span>
+        </div>
         <pageNation v-model="current" :maxPage="maxPage"></pageNation>
         <template v-if="viewList.length">
             <table class="normal w100 fix">
@@ -29,7 +43,10 @@
                         <hr />
                         {{ formatDate(v.lastPlayed) }}
                     </td>
-                    <td><button class="w100" @click="deleteVideo(v.url)">解除</button></td>
+                    <td>
+                        <button class="w100" @click="registTag = v">タグ登録</button>
+                        <button class="w100" @click="deleteVideo(v.url)">解除</button>
+                    </td>
                 </tr>
             </table>
         </template>
@@ -37,6 +54,7 @@
             <p>登録されている動画がありません</p>
         </template>
     </div>
+    <registTagModal v-if="registTag" :video="registTag" @close="registTag = null"></registTagModal>
 </template>
 
 <script>
@@ -44,6 +62,7 @@ import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import pageNation from './items/pageNation.vue';
 import { formatDate } from "@/utils/utils";
+import registTagModal from "./items/registTagModal.vue"
 
 export default {
     setup() {
@@ -51,6 +70,15 @@ export default {
 
         const sort = ref();
         const sortType = ref();
+
+        const videoTitle = ref("");
+        const siteLists = ref([]);
+        const site = ref("");
+        const tags = ref([]);
+        const tag = ref("");
+        const registTag = ref();
+
+        const selectedTags = ref({});
 
         const videoCount = ref();
 
@@ -80,9 +108,19 @@ export default {
             else await store.dispatch('Common/sort', sort.value);
             if(!sortType.value) sortType.value = store.getters["Common/sortType"]
             else await store.dispatch('Common/sortType', sortType.value);
+
+            let tags = [];
+
+            for(let st in selectedTags.value) {
+                tags.push(st);
+            }
+
             let videoInfo = await store.dispatch('Api/callApi', {url: "videos/videolists", data: {
                 sortType: sortType.value,
-                sort: sort.value
+                sort: sort.value,
+                title: videoTitle.value,
+                site: site.value,
+                tags
             }})
 
             videos.value = videoInfo.video;
@@ -91,6 +129,19 @@ export default {
             current.value = store.getters["Common/currentPage"];
         }
         load();
+
+        const getSiteLists = async () => {
+            siteLists.value = await store.dispatch('Api/callApi', {url: "videos/getSiteLists"});
+            tags.value = await store.dispatch('Api/callApi', {url: "videos/getTags"});
+        }
+        getSiteLists();
+
+        const putTags = () => {
+            // console.log(selectedTags.value);
+            selectedTags.value[tag.value] = tags.value[tag.value];
+            tag.value = "";
+            load();
+        }
 
         const deleteVideo = async (url) => {
             if(confirm("削除するともとには戻せません。よろしいですか？")) {
@@ -105,6 +156,10 @@ export default {
             await store.dispatch('Common/setCurrentPage', n);
         })
 
+        const delTag = (name) => {
+            delete selectedTags.value[name];
+            load();
+        }
         return {
             sortType,
             sort,
@@ -114,10 +169,19 @@ export default {
             viewList,
             deleteVideo,
             formatDate,
-            videoCount
+            videoCount,
+            videoTitle,
+            siteLists,
+            site,
+            tags,
+            tag,
+            putTags,
+            selectedTags,
+            delTag,
+            registTag
         }
     },
-    components: {pageNation}
+    components: {pageNation,registTagModal}
 }
 </script>
 
@@ -135,5 +199,20 @@ export default {
 .sorting{
     display: flex;
     flex-wrap: wrap;
+}
+
+.sorting.tags {
+    width: calc(100% - 20px);
+    padding: 10px;
+    background-color: black;
+}
+.deleteBtn{
+    cursor: pointer;
+}
+.tag{
+    /* border: 1px solid ; */
+    background-color: gray;
+    padding: 0.3em;
+    border-radius: 1.6em;
 }
 </style>

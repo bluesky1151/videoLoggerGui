@@ -11,6 +11,7 @@ if(splt.length >= 5) {
     $.post(target, {
         title,
         url: nowurl,
+        site: 2,
         image: getImageURL()
     }, (data) => {
         console.log(data);

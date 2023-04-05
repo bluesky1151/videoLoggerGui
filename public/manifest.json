@@ -25,6 +25,21 @@
             "matches": [ "https://www.xvideos.com/video*" ],
             "js": [ "modules/jquery-3.6.0.min.js" , "scripts/xvideos.js" ],
             "run_at": "document_end"
+        },
+        {
+            "matches": ["https://jp.pornhub.com/view_video.php?viewkey=*"],
+            "js": ["modules/jquery-3.6.0.min.js", "scripts/pornhub.js"],
+            "run_at": "document_end"
+        },
+        {
+            "matches": ["https://jp.xero.porn/*"],
+            "js": ["modules/jquery-3.6.0.min.js", "scripts/xeroporn.js"],
+            "run_at": "document_end"
+        },
+        {
+            "matches": ["https://shiroino.com/video/*"],
+            "js": ["modules/jquery-3.6.0.min.js", "scripts/shiroino.js"],
+            "run_at": "document_end"
         }
     ]
   }

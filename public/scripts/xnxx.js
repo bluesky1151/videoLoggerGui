@@ -18,6 +18,7 @@ if(isset(url)) {
     $.post(target, {
         title: document.title,
         url: url_.join('/'),
+        site: 4,
         image: getImageURL()
     }, (data) => {
         console.log(data);

@@ -11,6 +11,7 @@ if(4 < splittedUrl.length){
     $.post(target, {
         title,
         url: nowurl,
+        site: 5,
         image: getImageURL()
     }, (data) => {
         console.log(data);
