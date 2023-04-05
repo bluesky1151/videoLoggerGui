@@ -9,7 +9,7 @@
                 {{ video.title }}
             </div>
             <p class="tags">タグを追加する: <select v-model="tag" v-for="(t, index) in tags" :key="index" @change="putTags">
-                <option :value="index">{{ t }}</option>
+                <option v-for="(t, index) in tags" :key="index" :value="index">{{ t }}</option>
             </select></p>
             <div class="selectedTags">
                 <span class="tag" v-for="(t, index) of selectedTags" :key="index">{{ t }}&nbsp;<span class="deleteBtn" @click="delTag(index)">×</span></span>
