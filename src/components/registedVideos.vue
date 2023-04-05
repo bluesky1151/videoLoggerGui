@@ -13,8 +13,8 @@
             <p>動画: {{ videoCount }}件登録中</p>
         </div>
         <div class="sorting">
-            <p>タイトル検索: <input v-model="videoTitle" @change="load" /></p>
-            <p>サイト検索: <select v-model="site" @change="load">
+            <p>タイトル検索: <input v-model="videoTitle" @change="searchTitle" /></p>
+            <p>サイト検索: <select v-model="site" @change="searchTitle">
                 <option value="">すべて</option>
                 <option value="-1">未分類</option>
                 <option v-for="sl in siteLists" :key="sl" :value="sl.value">{{ sl.description }}</option>
@@ -103,6 +103,21 @@ export default {
             current.value = num;
         }
 
+        const getValues = () => {
+            selectedTags.value = store.getters["Common/tags"];
+            site.value = store.getters["Common/site"];
+            videoTitle.value = store.getters["Common/title"];
+        }
+        getValues();
+
+        const searchTitle = async () => {
+            // console.log('searchTitle');
+            await store.dispatch('Common/setTags', selectedTags.value);
+            await store.dispatch('Common/setSite', site.value)
+            await store.dispatch('Common/setTitle', videoTitle.value)
+            load();
+        }
+
         const load = async () => {
             if(!sort.value) sort.value = store.getters["Common/sort"];
             else await store.dispatch('Common/sort', sort.value);
@@ -140,7 +155,7 @@ export default {
             // console.log(selectedTags.value);
             selectedTags.value[tag.value] = tags.value[tag.value];
             tag.value = "";
-            load();
+            searchTitle()
         }
 
         const deleteVideo = async (url) => {
@@ -158,7 +173,7 @@ export default {
 
         const delTag = (name) => {
             delete selectedTags.value[name];
-            load();
+            searchTitle()
         }
         return {
             sortType,
@@ -178,7 +193,8 @@ export default {
             putTags,
             selectedTags,
             delTag,
-            registTag
+            registTag,
+            searchTitle
         }
     },
     components: {pageNation,registTagModal}
