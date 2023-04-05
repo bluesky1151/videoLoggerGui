@@ -58,4 +58,5 @@ table.normal td{
     width: 50%; height: 50%;
     transform: translate(-50%, -50%);
     background-color: #181818;
+    overflow: auto;
 }
