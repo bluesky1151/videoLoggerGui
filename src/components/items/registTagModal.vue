@@ -8,7 +8,7 @@
             <div class="title" :title="video.title">
                 {{ video.title }}
             </div>
-            <p class="tags">タグを追加する: <select v-model="tag" v-for="(t, index) in tags" :key="index" @change="putTags">
+            <p class="tags">タグを追加する: <select v-model="tag" @change="putTags">
                 <option v-for="(t, index) in tags" :key="index" :value="index">{{ t }}</option>
             </select></p>
             <div class="selectedTags">
