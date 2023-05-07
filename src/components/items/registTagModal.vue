@@ -9,7 +9,7 @@
                 {{ video.title }}
             </div>
             <p class="tags">タグを追加する: <select v-model="tag" @change="putTags">
-                <option v-for="(t, index) in tags" :key="index" :value="index">{{ t }}</option>
+                <option v-for="(t, index) in tags" :key="index" :value="index" :hidden="selectedTags[index] != undefined">{{ t }}</option>
             </select></p>
             <div class="selectedTags">
                 <span class="tag" v-for="(t, index) of selectedTags" :key="index">{{ t }}&nbsp;<span class="deleteBtn" @click="delTag(index)">×</span></span>
@@ -108,5 +108,6 @@ export default {
     background-color: gray;
     padding: 0.3em;
     border-radius: 1.6em;
+    display: inline-block;
 }
 </style>

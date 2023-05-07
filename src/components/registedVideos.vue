@@ -16,11 +16,11 @@
             <p>タイトル検索: <input v-model="videoTitle" @change="searchTitle" /></p>
             <p>サイト検索: <select v-model="site" @change="searchTitle">
                 <option value="">すべて</option>
-                <option value="-1">未分類</option>
+                <!-- <option value="-1">未分類</option> -->
                 <option v-for="sl in siteLists" :key="sl" :value="sl.value">{{ sl.description }}</option>
             </select></p>
             <p>タグ検索: <select v-model="tag" @change="putTags">
-                <option v-for="(t, index) in tags" :key="index" :value="index">{{ t }}</option>
+                <option v-for="(t, index) in tags" :key="index" :value="index" :hidden="selectedTags[index] != undefined">{{ t }}</option>
             </select></p>
         </div>
         <div class="sorting tags">
@@ -230,5 +230,6 @@ export default {
     background-color: gray;
     padding: 0.3em;
     border-radius: 1.6em;
+    display: inline-block;
 }
 </style>

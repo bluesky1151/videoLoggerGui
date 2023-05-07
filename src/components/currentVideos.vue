@@ -22,6 +22,7 @@
                     <a target="_blank" :href="l[0]" :title="l[1]">動画サイト{{ index+1 }}</a>
                 </li>
             </ul>
+            <a v-if="token" target="_blank" :href="`https://asogi.f5.si/vl?token=${token}`">WEB版へ</a>
         </template>
     </div>
 
@@ -48,7 +49,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 
@@ -60,23 +61,13 @@ export default {
         const registModal = ref(null);
         const tag = ref("");
         const selectedTags = ref({});
-        let list = [
-            // ["https://erodaioh.com/", "無修正が見たい"], サービス終了
-            ["https://www.xnxx.com/", "XNXX"],
-            ["https://nukeruerodouga.com/", "ヌケル動画"],
-            ["http://xvideoflash.blog.fc2.com/", "ポルノコム - 無修正まとめ"],
-            ["https://jp.musyuusei.club/", "無修正クラブ"],
-            ["https://jp.xero.porn/", "Xero Porn"],
-            // ["https://channel.heydouga.com/monthly/channel/", "Hey動画(有料)"],
-            ["https://jp.spankbang.com/", "spancBang"],
-            ["https://shiroino.com/", "シロイノ"],
-            ["https://jp.pornhub.com/", "Pornhub"],
-            ["https://www.xvideos.com/", "xvideos"]
-        ];
+        const list = ref([]);
+        const token = computed(() => {return store.getters["Api/token"]})
 
         const load = async () => {
             videos.value = await store.dispatch('Api/callApi', {url: "videos/currentVideo"});
             tags.value = await store.dispatch('Api/callApi', {url: "videos/getTags"});
+            list.value = await store.dispatch('Api/callApi', {url: "videos/siteLists"})
         }
         load();
 
@@ -119,7 +110,8 @@ export default {
             tag,
             selectedTags,
             delTag,
-            putTags
+            putTags,
+            token
         }
     }
 }
@@ -171,5 +163,6 @@ export default {
     background-color: gray;
     padding: 0.3em;
     border-radius: 1.6em;
+    display: inline-block;
 }
 </style>
